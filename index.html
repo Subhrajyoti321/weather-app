@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg-layer" id="bgLayer"></div>
+  <div class="noise"></div>
+
+  <div class="app">
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="cityInput" placeholder="Search city…" autocomplete="off" spellcheck="false">
+        <button id="searchBtn" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="unit-toggle">
+        <button class="unit-btn active" id="celsiusBtn">°C</button>
+        <button class="unit-btn" id="fahrenheitBtn">°F</button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-msg" id="errorMsg"></div>
+
+    <!-- Loading -->
+    <div class="loader" id="loader">
+      <div class="loader-ring"></div>
+      <span>Fetching weather…</span>
+    </div>
+
+    <!-- Main card (hidden until data loads) -->
+    <div class="weather-card" id="weatherCard">
+
+      <div class="card-top">
+        <div class="location-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span id="cityName">—</span>
+          <span id="countryCode" class="country"></span>
+        </div>
+        <span id="localTime" class="local-time">—</span>
+      </div>
+
+      <div class="main-temp-row">
+        <div class="condition-icon" id="conditionIcon">☁️</div>
+        <div class="temp-block">
+          <div class="temp-big" id="tempDisplay">—</div>
+          <div class="feels-like">Feels like <span id="feelsLike">—</span></div>
+        </div>
+      </div>
+
+      <div class="condition-label" id="conditionLabel">—</div>
+
+      <!-- Stats grid -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <span class="stat-label">Humidity</span>
+          <span class="stat-val" id="humidity">—</span>
+        </div>
+        <div class="stat-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+          <span class="stat-label">Wind</span>
+          <span class="stat-val" id="wind">—</span>
+        </div>
+        <div class="stat-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <span class="stat-label">UV Index</span>
+          <span class="stat-val" id="uvIndex">—</span>
+        </div>
+        <div class="stat-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+          <span class="stat-label">Cloud Cover</span>
+          <span class="stat-val" id="cloudCover">—</span>
+        </div>
+        <div class="stat-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="stat-label">Pressure</span>
+          <span class="stat-val" id="pressure">—</span>
+        </div>
+        <div class="stat-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span class="stat-label">Visibility</span>
+          <span class="stat-val" id="visibility">—</span>
+        </div>
+      </div>
+
+      <!-- Sun times -->
+      <div class="sun-row">
+        <div class="sun-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg>
+          Sunrise <span id="sunrise">—</span>
+        </div>
+        <div class="sun-divider"></div>
+        <div class="sun-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg>
+          Sunset <span id="sunset">—</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- API key note -->
+    <p class="api-note" id="apiNote">
+      Add your <a href="https://openweathermap.org/api" target="_blank">OpenWeatherMap API key</a> in <code>script.js</code> to enable live data.
+    </p>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
